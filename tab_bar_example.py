@@ -2,6 +2,7 @@ from PySide2.QtCore import *
 from PySide2.QtWidgets import *
 from PySide2.QtGui import *
 
+
 class TabBar(QTabBar):
     def tabSizeHint(self, index):
         s = QTabBar.tabSizeHint(self, index)
@@ -27,7 +28,7 @@ class TabBar(QTabBar):
             painter.translate(c)
             painter.rotate(90)
             painter.translate(-c)
-            painter.drawControl(QStyle.CE_TabBarTabLabel, opt);
+            painter.drawControl(QStyle.CE_TabBarTabLabel, opt)
             painter.restore()
 
 
@@ -37,28 +38,30 @@ class TabWidget(QTabWidget):
         self.setTabBar(TabBar(self))
         self.setTabPosition(QTabWidget.West)
 
+
 class ProxyStyle(QProxyStyle):
     def drawControl(self, element, opt, painter, widget):
         if element == QStyle.CE_TabBarTabLabel:
             ic = self.pixelMetric(QStyle.PM_TabBarIconSize)
             r = QRect(opt.rect)
-            w =  0 if opt.icon.isNull() else opt.rect.width() + self.pixelMetric(QStyle.PM_TabBarIconSize)
+            w =  0 if opt.icon.isNull() else opt.rect.width() + ic
             r.setHeight(opt.fontMetrics.width(opt.text) + w)
             r.moveBottom(opt.rect.bottom())
             opt.rect = r
         QProxyStyle.drawControl(self, element, opt, painter, widget)
+
 
 if __name__ == '__main__':
     import sys
 
     app = QApplication(sys.argv)
     QApplication.setStyle(ProxyStyle())
-    w = TabWidget()
-    w.addTab(QWidget(), QIcon("zoom.png"), "ABC")
-    w.addTab(QWidget(), QIcon("zoom-in.png"), "ABCDEFGH")
-    w.addTab(QWidget(), QIcon("zoom-out.png"), "XYZ")
+    tw = TabWidget()
+    tw.addTab(QWidget(), QIcon("zoom.png"), "ABC")
+    tw.addTab(QWidget(), QIcon("zoom-in.png"), "ABCDEFGH")
+    tw.addTab(QWidget(), QIcon("zoom-out.png"), "XYZ")
 
-    w.resize(640, 480)
-    w.show()
+    tw.resize(640, 480)
+    tw.show()
 
     sys.exit(app.exec_())
